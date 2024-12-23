@@ -25,13 +25,19 @@ async function run() {
   try {
 
     const marathonsCollection = client.db("marathonDB").collection('marathons')
-
+    
+    // marathons api 
     app.post("/add-marathons", async (req, res) => {
       const newMarathon = req.body
       // console.log(newJob)
       const result = await marathonsCollection.insertOne(newMarathon)
       res.send(result)
     })
+    app.get('/marathons', async (req, res) => {
+      const cursor = marathonsCollection.find()
+      const result = await cursor.toArray()
+      res.send(result)
+  })
     // Send a ping to confirm a successful connection
     await client.db('admin').command({ ping: 1 })
     console.log(
