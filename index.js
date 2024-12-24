@@ -1,6 +1,6 @@
 const express = require('express')
 const cors = require('cors')
-const { MongoClient, ServerApiVersion } = require('mongodb')
+const { MongoClient, ServerApiVersion, ObjectId, } = require('mongodb')
 require('dotenv').config()
 
 const port = process.env.PORT || 9000
@@ -27,16 +27,40 @@ async function run() {
     const marathonsCollection = client.db("marathonDB").collection('marathons')
     
     // marathons api 
+
+    // marathon post api 
     app.post("/add-marathons", async (req, res) => {
       const newMarathon = req.body
       // console.log(newJob)
       const result = await marathonsCollection.insertOne(newMarathon)
       res.send(result)
     })
+    // get all marathons api 
     app.get('/marathons', async (req, res) => {
       const cursor = marathonsCollection.find()
       const result = await cursor.toArray()
       res.send(result)
+  })
+  // get single marathon data api 
+  app.get('/marathon/:id', async(req,res)=>{
+    const id = req.params.id;
+    const query={_id: new ObjectId(id)}
+    const result = await marathonsCollection.findOne(query)
+    res.send(result)
+  })
+  // get email based my marathons list 
+  app.get('/marathons/:email', async(req,res)=>{
+    const email=req.params.email;
+    const query = {email:email}
+    const result = await marathonsCollection.find(query).toArray()
+    res.send(result)
+  })
+  // marathons delete api 
+  app.delete('/marathon/:id', async(req,res)=>{
+    const id = req.params.id;
+    const query = {_id:new ObjectId(id)}
+    const result = await marathonsCollection.deleteOne(query)
+    res.send(result);
   })
     // Send a ping to confirm a successful connection
     await client.db('admin').command({ ping: 1 })
