@@ -25,6 +25,7 @@ async function run() {
   try {
 
     const marathonsCollection = client.db("marathonDB").collection('marathons')
+    const appliesCollection = client.db("marathonDB").collection('applies')
     
     // marathons api 
 
@@ -74,6 +75,13 @@ async function run() {
       $set:updatedMarathon
     }
     const result = await marathonsCollection.updateOne(filter, marathon,options)
+    res.send(result)
+  })
+
+  // my apply api
+  app.post('/apply', async(req,res)=>{
+    const newApply = req.body
+    const result = await appliesCollection.insertOne(newApply)
     res.send(result)
   })
     // Send a ping to confirm a successful connection
