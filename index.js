@@ -42,6 +42,12 @@ async function run() {
       const result = await cursor.toArray()
       res.send(result)
     })
+    // get 6 marathon limit aapi 
+    app.get('/limit-marathons', async (req, res) => {
+      const cursor = marathonsCollection.find()
+      const result = await cursor.limit(6).toArray()
+      res.send(result)
+    })
     // get single marathon data api 
     app.get('/marathon/:id', async (req, res) => {
       const id = req.params.id;
